@@ -25,7 +25,7 @@ class BelongsToHasOneTest extends TestCase
             {
                 return $this->belongsTo(new class extends User {
                     protected $table = 'users';
-                    public function user()
+                    public function phone()
                     {
                         return $this->hasOne(Phone::class, 'user_id', 'id');
                     }
