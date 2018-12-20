@@ -53,7 +53,26 @@ class HasOneBelongsToTest extends TestCase
         $this->assertUserRelationsNotFound($users);
     }
 
-    public function testUserPhonesWithExplicitRevertedKeysAndRevetedRelations()
+    public function testUserPhonesWithExplicitKeysAndRevertedRelations()
+    {
+        $users = (new class extends User {
+            protected $table = 'users';
+            public function phone()
+            {
+                return $this->belongsTo(new class extends Phone {
+                    protected $table = 'phones';
+                    public function user()
+                    {
+                        return $this->hasOne(User::class, 'user_id', 'id');
+                    }
+                }, 'user_id', 'id');
+            }
+        })
+        ->with('phone')->get();
+        $this->assertUserRelationsNotFound($users);
+    }
+
+    public function testUserPhonesWithExplicitRevertedKeysAndRevertedRelations()
     {
         $users = (new class extends User {
             protected $table = 'users';
@@ -76,7 +95,7 @@ class HasOneBelongsToTest extends TestCase
     {
         $users->each(function (User $user) {
             $phone = $user->phone;
-            $this->assertTrue((bool) $phone);
+            $this->assertNotNull($phone);
             $this->assertEquals($user->id, $phone->user_id);
         });
     }
@@ -85,7 +104,7 @@ class HasOneBelongsToTest extends TestCase
     {
         $users->each(function (User $user) {
             $phone = $user->phone;
-            $this->assertFalse((bool) $phone);
+            $this->assertNull($phone);
         });
     }
 }

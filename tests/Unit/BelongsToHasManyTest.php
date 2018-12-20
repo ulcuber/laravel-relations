@@ -54,6 +54,25 @@ class BelongsToHasManyTest extends TestCase
         ->with('user')->get();
     }
 
+    public function testPostUsersWithExplicitKeysAndRevetedRelations()
+    {
+        $this->expectException(QueryException::class);
+        (new class extends Post {
+            protected $table = 'posts';
+            public function user()
+            {
+                return $this->hasMany(new class extends User {
+                    protected $table = 'users';
+                    public function post()
+                    {
+                        return $this->belongsTo(User::class, 'user_id', 'id');
+                    }
+                }, 'user_id', 'id');
+            }
+        })
+        ->with('user')->get();
+    }
+
     public function testPostUsersWithExplicitRevertedKeysAndRevetedRelations()
     {
         $posts = (new class extends Post {
