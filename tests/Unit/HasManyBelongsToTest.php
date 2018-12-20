@@ -22,13 +22,7 @@ class HasManyBelongsToTest extends TestCase
             protected $table = 'users';
             public function posts()
             {
-                return $this->hasMany(new class extends Post {
-                    protected $table = 'posts';
-                    public function user()
-                    {
-                        return $this->belongsTo(User::class, 'user_id', 'id');
-                    }
-                }, 'user_id', 'id');
+                return $this->hasMany(Post::class, 'user_id', 'id');
             }
         })->with('posts')->get();
         $this->assertUserRelations($users);
@@ -40,13 +34,7 @@ class HasManyBelongsToTest extends TestCase
             protected $table = 'users';
             public function posts()
             {
-                return $this->hasMany(new class extends Post {
-                    protected $table = 'posts';
-                    public function user()
-                    {
-                        return $this->belongsTo(User::class, 'id', 'user_id');
-                    }
-                }, 'id', 'user_id');
+                return $this->hasMany(Post::class, 'id', 'user_id');
             }
         })
         ->with('posts')->get();
@@ -59,13 +47,7 @@ class HasManyBelongsToTest extends TestCase
             protected $table = 'users';
             public function posts()
             {
-                return $this->belongsTo(new class extends Post {
-                    protected $table = 'posts';
-                    public function user()
-                    {
-                        return $this->hasMany(User::class, 'user_id', 'id');
-                    }
-                }, 'user_id', 'id');
+                return $this->belongsTo(Post::class, 'user_id', 'id');
             }
         })
         ->with('posts')->get();
@@ -78,13 +60,7 @@ class HasManyBelongsToTest extends TestCase
             protected $table = 'users';
             public function posts()
             {
-                return $this->belongsTo(new class extends Post {
-                    protected $table = 'posts';
-                    public function user()
-                    {
-                        return $this->hasMany(User::class, 'id', 'user_id');
-                    }
-                }, 'id', 'user_id');
+                return $this->belongsTo(Post::class, 'id', 'user_id');
             }
         })
         ->with('posts')->get();

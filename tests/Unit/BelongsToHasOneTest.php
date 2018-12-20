@@ -23,13 +23,7 @@ class BelongsToHasOneTest extends TestCase
             protected $table = 'phones';
             public function user()
             {
-                return $this->belongsTo(new class extends User {
-                    protected $table = 'users';
-                    public function phone()
-                    {
-                        return $this->hasOne(Phone::class, 'user_id', 'id');
-                    }
-                }, 'user_id', 'id');
+                return $this->belongsTo(User::class, 'user_id', 'id');
             }
         })->with('user')->get();
         $this->assertPhoneRelations($phones);
@@ -42,13 +36,7 @@ class BelongsToHasOneTest extends TestCase
             protected $table = 'phones';
             public function user()
             {
-                return $this->belongsTo(new class extends User {
-                    protected $table = 'users';
-                    public function phone()
-                    {
-                        return $this->hasOne(Phone::class, 'id', 'user_id');
-                    }
-                }, 'id', 'user_id');
+                return $this->belongsTo(User::class, 'id', 'user_id');
             }
         })
         ->with('user')->get();
@@ -61,13 +49,7 @@ class BelongsToHasOneTest extends TestCase
             protected $table = 'phones';
             public function user()
             {
-                return $this->hasOne(new class extends User {
-                    protected $table = 'users';
-                    public function phone()
-                    {
-                        return $this->belongsTo(User::class, 'user_id', 'id');
-                    }
-                }, 'user_id', 'id');
+                return $this->hasOne(User::class, 'user_id', 'id');
             }
         })
         ->with('user')->get();
@@ -79,13 +61,7 @@ class BelongsToHasOneTest extends TestCase
             protected $table = 'phones';
             public function user()
             {
-                return $this->hasOne(new class extends User {
-                    protected $table = 'users';
-                    public function phone()
-                    {
-                        return $this->belongsTo(User::class, 'id', 'user_id');
-                    }
-                }, 'id', 'user_id');
+                return $this->hasOne(User::class, 'id', 'user_id');
             }
         })
         ->with('user')->get();
