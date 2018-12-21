@@ -21,7 +21,7 @@ class RelationsHasManyTest extends TestCase
     private $relations = [
         'user_id' => [
             User::class => Post::class,
-            'posts' => 'user',
+            // 'posts' => 'user',
         ]
     ];
 
@@ -29,10 +29,17 @@ class RelationsHasManyTest extends TestCase
     {
         foreach ($this->relations as $foreignKey => $arr) {
             $keys = array_keys($arr);
+
             $main = $keys[0];
-            $mainRelation = $keys[1];
             $related = $arr[$main];
-            $relatedRelation = $arr[$mainRelation];
+
+            if (isset($keys[1])) {
+                $mainRelation = $keys[1];
+                $relatedRelation = $arr[$mainRelation];
+            } else {
+                $mainRelation = str_plural(class_basename($related));
+                $relatedRelation = class_basename($main);
+            }
 
             $relatedModels = new EloquentCollection();
             $models = factory($main, static::MAIN_COUNT)->create();
