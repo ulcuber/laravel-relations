@@ -72,7 +72,7 @@ class BelongsToHasManyTest extends TestCase
     {
         $posts->each(function (Post $post) {
             $user = $post->user;
-            $this->assertTrue((bool) $user);
+            $this->assertNotNull($user);
             $this->assertEquals($post->user_id, $user->id);
         });
     }
