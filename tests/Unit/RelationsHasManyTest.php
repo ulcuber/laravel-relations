@@ -21,7 +21,7 @@ class RelationsHasManyTest extends TestCase
     private $relations = [
         'user_id' => [
             User::class => Post::class,
-            // 'posts' => 'user',
+            'posts' => 'user',
         ]
     ];
 
