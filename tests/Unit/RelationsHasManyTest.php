@@ -18,42 +18,49 @@ class RelationsHasManyTest extends TestCase
     const MAIN_COUNT = 5;
     const RELATED_COUNT = 3;
 
-    private $relations = [
-        'user_id' => [
-            User::class => Post::class,
-            'posts' => 'user',
-        ]
-    ];
-
-    public function testRelations()
+    public function provider()
     {
-        foreach ($this->relations as $foreignKey => $arr) {
-            $keys = array_keys($arr);
+        return [
+            [
+                'user_id',
+                [
+                    User::class => Post::class,
+                    'posts' => 'user',
+                ],
+            ],
+        ];
+    }
 
-            $main = $keys[0];
-            $related = $arr[$main];
+    /**
+     * @dataProvider provider
+     */
+    public function testRelations(string $foreignKey, array $arr)
+    {
+        $keys = array_keys($arr);
 
-            if (isset($keys[1])) {
-                $mainRelation = $keys[1];
-                $relatedRelation = $arr[$mainRelation];
-            } else {
-                $mainRelation = str_plural(class_basename($related));
-                $relatedRelation = class_basename($main);
-            }
+        $main = $keys[0];
+        $related = $arr[$main];
 
-            $relatedModels = new EloquentCollection();
-            $models = factory($main, static::MAIN_COUNT)->create();
-            foreach ($models as $model) {
-                $newRelated = factory($related, static::RELATED_COUNT)
+        if (isset($keys[1])) {
+            $mainRelation = $keys[1];
+            $relatedRelation = $arr[$mainRelation];
+        } else {
+            $mainRelation = str_plural(class_basename($related));
+            $relatedRelation = class_basename($main);
+        }
+
+        $relatedModels = new EloquentCollection();
+        $models = factory($main, static::MAIN_COUNT)->create();
+        foreach ($models as $model) {
+            $newRelated = factory($related, static::RELATED_COUNT)
                 ->create([
                     $foreignKey => $model->id,
                 ]);
-                $relatedModels->merge($newRelated);
-            }
-
-            $this->assertHasMany($models, $foreignKey, $mainRelation);
-            $this->assertBelongsTo($relatedModels, $foreignKey, $relatedRelation);
+            $relatedModels->merge($newRelated);
         }
+
+        $this->assertHasMany($models, $foreignKey, $mainRelation);
+        $this->assertBelongsTo($relatedModels, $foreignKey, $relatedRelation);
     }
 
     private function assertHasMany(
